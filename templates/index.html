@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Решение квадратных уравнений</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 520px;
+            width: 100%;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 26px;
+            color: #4a3f8a;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .equation {
+            text-align: center;
+            font-size: 18px;
+            font-style: italic;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 24px;
+            letter-spacing: 1px;
+        }
+
+        .coeff-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .coeff-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .coeff-item label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .coeff-item input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            outline: none;
+            transition: all 0.25s ease;
+            background: #f9f9fc;
+        }
+
+        .coeff-item input:focus {
+            border-color: #667eea;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+        }
+
+        .display-options {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .display-options label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            background: #f0f0f7;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.25s ease;
+            border: 2px solid transparent;
+            user-select: none;
+        }
+
+        .display-options label:hover {
+            background: #e8e8f5;
+        }
+
+        .display-options input[type="radio"] {
+            accent-color: #667eea;
+            cursor: pointer;
+        }
+
+        .display-options input[type="radio"]:checked + span {
+            color: #4a3f8a;
+            font-weight: 600;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            font-size: 17px;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.45);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.35);
+        }
+
+        .results {
+            margin-top: 28px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7ff 0%, #ede9ff 100%);
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            animation: slideIn 0.4s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .results h2 {
+            font-size: 16px;
+            color: #4a3f8a;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed #d5d0ea;
+            font-size: 15px;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .result-value {
+            font-weight: 700;
+            color: #4a3f8a;
+            font-size: 16px;
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+
+        .no-roots {
+            color: #d9534f !important;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .coeff-group {
+                flex-direction: column;
+            }
+
+            .display-options {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .display-options label {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Решение квадратных уравнений</h1>
+        <p class="subtitle">ax² + bx + c = 0</p>
+
+        <form action="/quad_eq" method="POST">
+            <div class="coeff-group">
+                <div class="coeff-item">
+                    <label for="a">a</label>
+                    <input type="number" step="any" id="a" name="a" value="{{ a }}" placeholder="0" required>
+                </div>
+                <div class="coeff-item">
+                    <label for="b">b</label>
+                    <input type="number" step="any" id="b" name="b" value="{{ b }}" placeholder="0" required>
+                </div>
+                <div class="coeff-item">
+                    <label for="c">c</label>
+                    <input type="number" step="any" id="c" name="c" value="{{ c }}" placeholder="0" required>
+                </div>
+            </div>
+
+            <div class="display-options">
+                <label>
+                    <input type="radio" name="display" value="roots"
+                        {% if showDisplay == 'roots' %}checked{% endif %}>
+                    <span>Только корни</span>
+                </label>
+                <label>
+                    <input type="radio" name="display" value="discriminant"
+                        {% if showDisplay == 'discriminant' %}checked{% endif %}>
+                    <span>Корни и дискриминант</span>
+                </label>
+            </div>
+
+            <button type="submit">Решить уравнение</button>
+        </form>
+
+        {% if X1 != '' or X2 != '' or D != '' %}
+        <div class="results">
+            <h2>Результат</h2>
+
+            <div class="result-item">
+                <span class="result-label">x₁:</span>
+                <span class="result-value {% if X1 == 'Нет корней' %}no-roots{% endif %}">
+                    {{ X1 if X1 != '' else '—' }}
+                </span>
+            </div>
+
+            <div class="result-item">
+                <span class="result-label">x₂:</span>
+                <span class="result-value">
+                    {{ X2 if X2 != '' else '—' }}
+                </span>
+            </div>
+
+            {% if showDisplay == 'discriminant' and D != '' %}
+            <div class="result-item">
+                <span class="result-label">Дискриминант (D):</span>
+                <span class="result-value">{{ D }}</span>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
